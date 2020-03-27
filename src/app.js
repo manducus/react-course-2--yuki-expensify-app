@@ -14,15 +14,6 @@ import 'react-dates/lib/css/_datepicker.css'
 
 const store = configureStore()
 
-store.dispatch(addExpense({ description: "Water bill", amount: 4500, createdAt: 1000 }))
-store.dispatch(addExpense({ description: "Gas bill", amount: 90, createdAt: 1050 }))
-store.dispatch(addExpense({ description: "Rent", amount: 109500, createdAt: 1000 }))
-
-
-const state = store.getState()
-const visibleExpenses = getVisibleExpenses(state.expenses, state.filters)
-console.log(visibleExpenses)
-
 // <Provider /> makes the Redux store available to the rest of the app.
 const jsx = (
     <Provider store={store}>
