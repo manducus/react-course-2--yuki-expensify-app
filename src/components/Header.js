@@ -1,14 +1,21 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { startLogout } from '../actions/auth'
+import { connect } from 'react-redux'
 
-const Header = () => (
+export const Header = ({ startLogout }) => (
     <header>
         <h1>Expensify</h1>
-        <p><NavLink exact to="/" activeClassName="is-active">Home page</NavLink></p>
+        <p><NavLink exact to="/dashboard" activeClassName="is-active">Home page</NavLink></p>
         <p><NavLink to="/create" activeClassName="is-active">create expense page</NavLink></p>
         <p><NavLink to="/help" activeClassName="is-active">help page</NavLink></p>
+        <button onClick={startLogout}>Logout</button>
     </header>
 )
 // NavLink adds styling attributes to the rendered element when it matches the current URL
 
-export default Header
+const mapDispatchToProps = (dispatch) => ({
+    startLogout: () => dispatch(startLogout())
+})
+
+export default connect(undefined, mapDispatchToProps)(Header)

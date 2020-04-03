@@ -9,7 +9,7 @@ exports[`should render Header correctly 1`] = `
     <NavLink
       activeClassName="is-active"
       exact={true}
-      to="/"
+      to="/dashboard"
     >
       Home page
     </NavLink>
@@ -30,5 +30,10 @@ exports[`should render Header correctly 1`] = `
       help page
     </NavLink>
   </p>
+  <button
+    onClick={[MockFunction]}
+  >
+    Logout
+  </button>
 </header>
 `;
