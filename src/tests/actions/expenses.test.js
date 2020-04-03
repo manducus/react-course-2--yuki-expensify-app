@@ -1,6 +1,6 @@
 import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import { addExpense, removeExpense, editExpense, setExpenses, startAddExpense, startSetExpenses, startRemoveExpense } from '../../actions/expenses'
+import { addExpense, removeExpense, editExpense, setExpenses, startAddExpense, startSetExpenses, startRemoveExpense, startEditExpense } from '../../actions/expenses'
 import expenses from '../fixtures/expenses'
 import database from '../../firebase/firebase'
 
@@ -51,6 +51,25 @@ test('should setup edit expense action object', () => {
 });
 // .toEqual(value) - compare recursively all properties of object instances
 
+test('should edit expenses from firebase', (done) => {
+    const store = createMockStore({})
+    const id = expenses[2].id
+    const updates = {
+        description: "test test"
+    }
+    store.dispatch(startEditExpense(id, updates)).then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual({
+            type: "EDIT_EXPENSE",
+            id,
+            updates
+        });
+        return database.ref(`expenses/${id}/description`).once("value").then((snapshot) => {
+            expect(snapshot.val()).toBe(updates.description);
+            done();
+        })
+    })
+});
 
 test('should setup add expense action object with provided value', () => {
     const action = addExpense(expenses[2])
