@@ -4,11 +4,11 @@ import toJSON from 'enzyme-to-json'
 import { EditExpensePage } from '../../components/EditExpensePage'
 import expenses from '../fixtures/expenses'
 
-let editExpense, removeExpense, history, expense, wrapper
+let editExpense, startRemoveExpense, history, expense, wrapper
 
 beforeEach(() => {
     editExpense = jest.fn()
-    removeExpense = jest.fn()
+    startRemoveExpense = jest.fn()
     history = {
         push: jest.fn()
     }
@@ -16,7 +16,7 @@ beforeEach(() => {
     wrapper = shallow(
         <EditExpensePage
             editExpense={editExpense}
-            removeExpense={removeExpense}
+            startRemoveExpense={startRemoveExpense}
             history={history}
             expense={expense}
         />
@@ -33,8 +33,8 @@ test('should handle editExpense', () => {
     expect(history.push).toHaveBeenCalledWith("/");
 });
 
-test('should handle removeExpense', () => {
+test('should handle startRemoveExpense', () => {
     wrapper.find("button").simulate("click")
-    expect(removeExpense).toHaveBeenCalledWith({ id: expense.id });
+    expect(startRemoveExpense).toHaveBeenCalledWith({ id: expense.id });
     expect(history.push).toHaveBeenCalledWith("/");
 });
