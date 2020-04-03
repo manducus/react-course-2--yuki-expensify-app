@@ -1,10 +1,18 @@
 import configureStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import { addExpense, removeExpense, editExpense, startAddExpense } from '../../actions/expenses'
+import { addExpense, removeExpense, editExpense, setExpenses, startAddExpense, startSetExpenses } from '../../actions/expenses'
 import expenses from '../fixtures/expenses'
 import database from '../../firebase/firebase'
 
 const createMockStore = configureStore([thunk])
+
+beforeEach((done) => {
+    const expenseData = {}
+    expenses.forEach(({ id, description, note, amount, createdAt }) => {
+        expenseData[id] = {description, note, amount, createdAt}
+    })
+    database.ref("expenses").set(expenseData).then(() => done())
+})
 
 test('should setup remove expense action object', () => {
     const action = removeExpense({ id: "12233dzf" })
@@ -88,49 +96,23 @@ test('should add expense with defaults to database and store', (done) => {
     })
 });
 
-// test('should setup add expense action object with default value', () => {
-//     const action = addExpense()
-//     expect(action).toEqual({
-//         type: "ADD_EXPENSE",
-//         expense: {
-//             description: "",
-//             note: "",
-//             amount: 0,
-//             createdAt: 0,
-//             id: expect.any(String)
-//         }
-//     });
-// });
-// Action generators for expenses
+test('should setup set expense action object with data', () => {
+    const action = setExpenses(expenses)
+    expect(action).toEqual({
+        type: "SET_EXPENSES",
+        expenses
+    });
+});
 
-// ADD_EXPENSE
-// const addExpense = (
-//     {
-//         description = "",
-//         note = "",
-//         amount = 0,
-//         createdAt = 0
-//     } = {}
-// ) => ({
-//     type: "ADD_EXPENSE",
-//     expense: {
-//         id: uuid(),
-//         description,
-//         note,
-//         amount,
-//         createdAt
-//     }
-// })
+test('should fetch the expenses from firebase', (done) => {
+    const store = createMockStore({})
 
-// // REMOVE_EXPENSE
-// const removeExpense = ({id} = {}) => ({
-//     type: "REMOVE_EXPENSE",
-//     id
-// })
-
-// // EDIT_EXPENSE
-// const editExpense = (id, updates) => ({
-//     type: "EDIT_EXPENSE",
-//     id,
-//     updates
-// })
+    store.dispatch(startSetExpenses()).then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual({
+            type: "SET_EXPENSES",
+            expenses
+        });
+        done();
+    })
+});
